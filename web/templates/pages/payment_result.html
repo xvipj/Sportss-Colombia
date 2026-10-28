@@ -1,0 +1,44 @@
+{{define "content"}}
+<div class="container section">
+  <div class="result-card card {{if eq .Kind "exito"}}result-success{{else if eq .Kind "fallo"}}result-fail{{else}}result-pending{{end}}">
+    <div class="result-icon" aria-hidden="true">
+      {{if eq .Kind "exito"}}✓{{else if eq .Kind "fallo"}}×{{else}}…{{end}}
+    </div>
+    <span class="eyebrow">Mercado Pago</span>
+    <h1>{{.TitleResult}}</h1>
+    {{if eq .Kind "exito"}}
+      <p class="muted">Recibimos tu pago. La reserva queda confirmada y tu factura está disponible.</p>
+    {{else if eq .Kind "pendiente"}}
+      <p class="muted">Tu pago está siendo procesado por Mercado Pago. Actualizaremos la reserva cuando se confirme.</p>
+    {{else}}
+      <p class="muted">El pago no se completó. El horario se mantiene bloqueado por unos minutos para que puedas intentarlo de nuevo.</p>
+    {{end}}
+
+    {{if .Booking}}
+    <div class="result-summary">
+      <div><span class="muted small">Reserva</span><strong>#{{.Booking.ID}}</strong></div>
+      <div><span class="muted small">Cancha</span><strong>{{.Booking.Court.Name}}</strong></div>
+      <div><span class="muted small">Fecha</span><strong>{{date .Booking.Date}} · {{.Booking.StartTime}} – {{.Booking.EndTime}}</strong></div>
+      <div><span class="muted small">Total</span><strong>{{money .Booking.TotalAmount}}</strong></div>
+      <div><span class="muted small">Estado</span><span class="badge badge-{{statusClass .Booking.Status}}">{{statusLabel .Booking.Status}}</span></div>
+    </div>
+    {{end}}
+
+    <div class="result-actions">
+      {{if and .Booking (eq .Kind "exito")}}
+        <a href="/mis-reservas" class="btn btn-primary">Ver mis reservas</a>
+        {{if .Invoice}}<a href="/facturas/{{.Booking.ID}}/descargar" class="btn btn-outline">Descargar factura</a>{{end}}
+      {{else if eq .Kind "fallo"}}
+        {{if .Booking}}<button class="btn btn-primary" data-checkout="{{.Booking.ID}}">Intentar de nuevo</button>{{end}}
+        <a href="/mis-reservas" class="btn btn-outline">Ir a mis reservas</a>
+      {{else}}
+        <a href="/mis-reservas" class="btn btn-primary">Ver estado</a>
+        <a href="/buscar" class="btn btn-outline">Seguir explorando</a>
+      {{end}}
+    </div>
+    {{if and .Booking (eq .Booking.Status "pendiente_pago")}}
+      <p class="muted small" data-pending-booking="{{.Booking.ID}}">Esta página se actualizará automáticamente cuando el pago se confirme.</p>
+    {{end}}
+  </div>
+</div>
+{{end}}

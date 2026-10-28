@@ -1,0 +1,67 @@
+{{define "content"}}
+<div class="page-head page-head-compact">
+  <div class="container">
+    {{template "panel_nav" .}}
+    <div class="page-head-row">
+      <div>
+        <span class="eyebrow">Panel empresa</span>
+        <h1>Mis canchas</h1>
+        <p class="muted">{{len .Courts}} espacios publicados.</p>
+      </div>
+      <a href="/panel/canchas/nueva" class="btn btn-primary">+ Publicar cancha</a>
+    </div>
+  </div>
+</div>
+
+<div class="container section-sm">
+  {{if .Courts}}
+  <div class="panel-court-list">
+    {{range .Courts}}
+    <article class="card panel-court">
+      <div class="panel-court-media">
+        {{if .Photos}}<img src="{{(index .Photos 0).Path}}" alt="{{.Name}}">{{else}}<div class="court-placeholder"><span>{{.Sport}}</span></div>{{end}}
+      </div>
+      <div class="panel-court-info">
+        <div class="booking-top">
+          <span class="badge {{if eq .Status "activa"}}badge-ok{{else}}badge-warn{{end}}">{{courtStatus .Status}}</span>
+          <span class="sport-pill">{{.Sport}}</span>
+        </div>
+        <h2>{{.Name}}</h2>
+        <p class="location">{{.Neighborhood}}, {{.City}}</p>
+        <div class="court-meta">
+          <span>{{.Surface}}</span>
+          <span>{{money .PricePerHour}} / hora</span>
+          {{if gt .RatingCount 0}}<span>★ {{stars .RatingAvg}} ({{.RatingCount}})</span>{{end}}
+        </div>
+      </div>
+      <div class="panel-court-actions">
+        <a href="/canchas/{{.ID}}" class="btn btn-ghost btn-sm">Ver pública</a>
+        <a href="/panel/canchas/{{.ID}}/editar" class="btn btn-outline btn-sm">Editar</a>
+        <form method="POST" action="/panel/canchas/{{.ID}}/estado">
+          <input type="hidden" name="_csrf" value="{{$.CSRF}}">
+          {{if eq .Status "activa"}}
+            <input type="hidden" name="status" value="pausada">
+            <button class="btn btn-ghost btn-sm" type="submit">Pausar</button>
+          {{else}}
+            <input type="hidden" name="status" value="activa">
+            <button class="btn btn-ghost btn-sm" type="submit">Activar</button>
+          {{end}}
+        </form>
+        <form method="POST" action="/panel/canchas/{{.ID}}/eliminar" data-confirm="¿Eliminar esta cancha? Las reservas históricas se conservarán, pero la cancha dejará de mostrarse.">
+          <input type="hidden" name="_csrf" value="{{$.CSRF}}">
+          <button class="btn btn-ghost btn-sm text-danger" type="submit">Eliminar</button>
+        </form>
+      </div>
+    </article>
+    {{end}}
+  </div>
+  {{else}}
+  <div class="empty-state">
+    <div class="empty-icon">🏟️</div>
+    <h3>Publica tu primera cancha</h3>
+    <p>Agrega fotos, horarios y precio para empezar a recibir reservas en línea.</p>
+    <a href="/panel/canchas/nueva" class="btn btn-primary">Publicar cancha</a>
+  </div>
+  {{end}}
+</div>
+{{end}}

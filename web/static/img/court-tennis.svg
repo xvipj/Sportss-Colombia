@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Cancha de tenis">
+  <defs>
+    <linearGradient id="hard" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2f7ea0"/>
+      <stop offset="1" stop-color="#155a78"/>
+    </linearGradient>
+    <linearGradient id="tennislight" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".2"/>
+      <stop offset=".6" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="tshadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="18" stdDeviation="24" flood-color="#083247" flood-opacity=".4"/>
+    </filter>
+    <pattern id="grain" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="8" cy="8" r="1" fill="#ffffff" opacity=".05"/>
+      <circle cx="24" cy="22" r="1" fill="#ffffff" opacity=".04"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="800" fill="#0f4c66"/>
+  <rect width="1200" height="800" fill="url(#grain)"/>
+  <circle cx="1040" cy="120" r="280" fill="#f59e0b" opacity=".05"/>
+  <g filter="url(#tshadow)">
+    <rect x="150" y="90" width="900" height="620" fill="url(#hard)"/>
+    <rect x="150" y="90" width="900" height="620" fill="none" stroke="#f4fbfd" stroke-width="6" opacity=".9"/>
+    <rect x="262" y="150" width="676" height="500" fill="none" stroke="#f4fbfd" stroke-width="4" opacity=".92"/>
+    <path d="M262 240h676M262 560h676" stroke="#f4fbfd" stroke-width="4" opacity=".9"/>
+    <path d="M262 400h676" stroke="#f4fbfd" stroke-width="3" opacity=".55"/>
+    <path d="M450 150v500M750 150v500" stroke="#f4fbfd" stroke-width="4" opacity=".9"/>
+    <path d="M450 310v180M750 310v180" stroke="#f4fbfd" stroke-width="4" opacity=".9"/>
+    <path d="M300 150v500M900 150v500" stroke="#f4fbfd" stroke-width="3" opacity=".35"/>
+  </g>
+  <g>
+    <rect x="586" y="112" width="28" height="576" fill="#123f52" opacity=".85"/>
+    <path d="M586 400h28" stroke="#ffffff" stroke-width="5" opacity=".95"/>
+    <path d="M600 100v600" stroke="#ffffff" stroke-width="2" opacity=".25" stroke-dasharray="7 9"/>
+    <circle cx="600" cy="400" r="4" fill="#ffffff" opacity=".8"/>
+  </g>
+  <g transform="translate(880 640)">
+    <circle cx="0" cy="0" r="26" fill="#d7f05a"/>
+    <path d="M-18 -10a24 24 0 0124-8M18 10a24 24 0 01-24 8" fill="none" stroke="#ffffff" stroke-width="3" opacity=".9"/>
+  </g>
+  <rect width="1200" height="800" fill="url(#tennislight)"/>
+  <g transform="translate(120 704)">
+    <rect width="180" height="46" rx="23" fill="#083247" opacity=".62"/>
+    <text x="90" y="30" font-family="Poppins, Arial, sans-serif" font-size="20" font-weight="700" letter-spacing="3" text-anchor="middle" fill="#ffffff">TENIS</text>
+  </g>
+</svg>

@@ -1,0 +1,110 @@
+{{define "content"}}
+<div class="page-head page-head-compact">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Ruta"><a href="/">Inicio</a><span>/</span><span>Mis reservas</span></nav>
+    <div class="page-head-row">
+      <div>
+        <h1>Mis reservas</h1>
+        <p class="muted">Historial, pagos, facturas y reseñas.</p>
+      </div>
+      <a href="/buscar" class="btn btn-primary">Reservar otra cancha</a>
+    </div>
+  </div>
+</div>
+
+<div class="container section-sm">
+  <div class="filter-tabs" role="navigation" aria-label="Filtrar reservas">
+    <a href="/mis-reservas" class="{{if eq .Status ""}}active{{end}}">Todas</a>
+    {{range .Statuses}}
+      <a href="/mis-reservas?status={{.}}" class="{{if eq $.Status .}}active{{end}}">{{statusLabel .}}</a>
+    {{end}}
+  </div>
+
+  {{if .Rows}}
+  <div class="booking-list">
+    {{range .Rows}}
+    <article class="card booking-card">
+      <div class="booking-media">
+        {{if .Booking.Court.Photos}}
+          <img src="{{(index .Booking.Court.Photos 0).Path}}" alt="{{.Booking.Court.Name}}">
+        {{else}}
+          <div class="court-placeholder"><span>{{.Booking.Court.Sport}}</span></div>
+        {{end}}
+      </div>
+      <div class="booking-info">
+        <div class="booking-top">
+          <span class="badge badge-{{statusClass .Booking.Status}}">{{statusLabel .Booking.Status}}</span>
+          <span class="muted small">Reserva #{{.Booking.ID}}</span>
+        </div>
+        <h2><a href="/canchas/{{.Booking.CourtID}}">{{.Booking.Court.Name}}</a></h2>
+        <p class="location">{{.Booking.Court.Neighborhood}}, {{.Booking.Court.City}}</p>
+        <div class="booking-facts">
+          <span><strong>{{date .Booking.Date}}</strong><small>Fecha</small></span>
+          <span><strong>{{.Booking.StartTime}} – {{.Booking.EndTime}}</strong><small>{{.Booking.Hours}} hora{{if gt .Booking.Hours 1}}s{{end}}</small></span>
+          <span><strong>{{money .Booking.TotalAmount}}</strong><small>Total</small></span>
+        </div>
+        {{if .Review}}
+          <div class="inline-review">
+            <span class="review-stars">{{range seq .Review.Rating}}★{{end}}</span>
+            <span class="muted small">Tu reseña: {{truncate .Review.Comment 90}}</span>
+          </div>
+        {{end}}
+      </div>
+      <div class="booking-actions">
+        {{if .CanPay}}
+          <button class="btn btn-primary btn-sm" data-checkout="{{.Booking.ID}}">Pagar ahora</button>
+        {{end}}
+        {{if .CanCancel}}
+          <button class="btn btn-ghost btn-sm text-danger" data-cancel-booking="{{.Booking.ID}}">Cancelar</button>
+        {{end}}
+        {{if .Invoice}}
+          <a href="/facturas/{{.Booking.ID}}/descargar" class="btn btn-outline btn-sm">Factura PDF</a>
+        {{end}}
+        {{if .CanReview}}
+          <button class="btn btn-outline btn-sm" data-review-booking="{{.Booking.ID}}">Dejar reseña</button>
+        {{end}}
+        <a href="/canchas/{{.Booking.CourtID}}" class="btn btn-ghost btn-sm">Ver cancha</a>
+      </div>
+    </article>
+    {{end}}
+  </div>
+  {{if gt (len .Pages) 1}}
+  <nav class="pagination" aria-label="Paginación">
+    {{range .Pages}}<a href="{{.URL}}" class="page-btn {{if .Active}}active{{end}}">{{.Number}}</a>{{end}}
+  </nav>
+  {{end}}
+  {{else}}
+    <div class="empty-state">
+      <div class="empty-icon">🗓️</div>
+      <h3>No tienes reservas {{if .Status}}con este estado{{end}}</h3>
+      <p>Cuando reserves una cancha, la verás aquí con su estado, factura y opciones.</p>
+      <a href="/buscar" class="btn btn-primary">Explorar canchas</a>
+    </div>
+  {{end}}
+</div>
+
+<div class="modal" id="review-modal" hidden>
+  <div class="modal-backdrop" data-close-modal></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="review-title">
+    <div class="modal-head">
+      <h2 id="review-title">Califica tu experiencia</h2>
+      <button type="button" class="icon-btn" data-close-modal aria-label="Cerrar">&times;</button>
+    </div>
+    <form id="review-form">
+      <input type="hidden" name="_csrf" value="{{.CSRF}}">
+      <input type="hidden" name="booking_id" id="review-booking-id" value="">
+      <div class="field">
+        <span class="label">Tu calificación</span>
+        <div class="star-input" role="radiogroup" aria-label="Calificación">
+          {{range seq 5}}<label><input type="radio" name="rating" value="{{.}}" {{if eq . 5}}checked{{end}}><span aria-hidden="true">★</span><span class="sr-only">{{.}} estrellas</span></label>{{end}}
+        </div>
+      </div>
+      <div class="field">
+        <label for="review-comment">Comentario</label>
+        <textarea id="review-comment" name="comment" rows="4" maxlength="1500" required placeholder="Cuéntanos cómo estuvo la cancha y la atención."></textarea>
+      </div>
+      <button class="btn btn-primary btn-block" type="submit">Publicar reseña</button>
+    </form>
+  </div>
+</div>
+{{end}}

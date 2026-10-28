@@ -1,0 +1,160 @@
+{{define "content"}}
+<div class="page-head page-head-compact">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Ruta"><a href="/">Inicio</a><span>/</span><span>Mi perfil</span></nav>
+    <h1>Mi perfil</h1>
+    <p class="muted">Administra tus datos, seguridad y preferencias.</p>
+  </div>
+</div>
+
+<div class="container section-sm">
+  <div class="profile-layout">
+    <aside class="card profile-card">
+      <div class="profile-head">
+        {{if .ProfileUser.AvatarPath}}
+          <img src="{{.ProfileUser.AvatarPath}}" alt="Foto de {{.ProfileUser.Name}}" class="avatar avatar-xl">
+        {{else}}
+          <span class="avatar avatar-xl avatar-initials">{{initials .ProfileUser.Name}}</span>
+        {{end}}
+        <h2>{{.ProfileUser.Name}}</h2>
+        <p class="muted small">{{.ProfileUser.Email}}</p>
+        <span class="badge badge-{{roleClass .ProfileUser.Role}}">{{roleLabel .ProfileUser.Role}}</span>
+      </div>
+      {{if .ProfileUser.BusinessName}}
+        <div class="profile-business">
+          <span class="muted small">Negocio</span>
+          <strong>{{.ProfileUser.BusinessName}}</strong>
+          {{if .ProfileUser.NIT}}<span class="muted small">NIT {{.ProfileUser.NIT}}</span>{{end}}
+        </div>
+      {{end}}
+      <div class="profile-links">
+        <a href="/mis-reservas">Mis reservas</a>
+        <a href="/#resenas">Mis reseñas</a>
+        {{if or (eq .ProfileUser.Role "business") (eq .ProfileUser.Role "admin")}}
+          <a href="/panel">Ir al panel de administración</a>
+        {{end}}
+      </div>
+    </aside>
+
+    <div class="profile-content">
+      <section class="card detail-section">
+        <div class="section-head compact">
+          <div><h2>Datos personales</h2><p class="muted">Mantén tu contacto actualizado.</p></div>
+        </div>
+        <form method="POST" action="/perfil" enctype="multipart/form-data" class="stack-form">
+          <input type="hidden" name="_csrf" value="{{.CSRF}}">
+          <div class="field-row">
+            <div class="field">
+              <label for="p-name">Nombre completo</label>
+              <input id="p-name" name="name" type="text" value="{{.ProfileUser.Name}}" required>
+            </div>
+            <div class="field">
+              <label for="p-phone">Teléfono</label>
+              <input id="p-phone" name="phone" type="tel" value="{{.ProfileUser.Phone}}" placeholder="310 555 0101">
+            </div>
+          </div>
+          <div class="field">
+            <label for="p-email">Correo electrónico</label>
+            <input id="p-email" type="email" value="{{.ProfileUser.Email}}" disabled>
+            <span class="hint">El correo de la cuenta no se puede cambiar por ahora.</span>
+          </div>
+          {{if or (eq .ProfileUser.Role "business") (eq .ProfileUser.Role "admin")}}
+          <div class="form-divider"><span>Datos del negocio</span></div>
+          <div class="field-row">
+            <div class="field">
+              <label for="p-business">Nombre del negocio</label>
+              <input id="p-business" name="business_name" type="text" value="{{.ProfileUser.BusinessName}}">
+            </div>
+            <div class="field">
+              <label for="p-nit">NIT</label>
+              <input id="p-nit" name="nit" type="text" value="{{.ProfileUser.NIT}}">
+            </div>
+          </div>
+          {{end}}
+          <div class="field">
+            <label for="p-avatar">Foto de perfil</label>
+            <input id="p-avatar" name="avatar" type="file" accept="image/jpeg,image/png,image/webp">
+            <span class="hint">JPG, PNG o WebP. Máximo 5 MB.</span>
+          </div>
+          <label class="checkbox-row">
+            <input type="checkbox" name="email_notify" {{if .ProfileUser.EmailNotify}}checked{{end}}>
+            <span>Recibir correos informativos y recordatorios de reservas.</span>
+          </label>
+          <button class="btn btn-primary" type="submit">Guardar cambios</button>
+        </form>
+      </section>
+
+      <section class="card detail-section" id="seguridad">
+        <div class="section-head compact">
+          <div><h2>Seguridad</h2><p class="muted">Cambia tu contraseña periódicamente.</p></div>
+        </div>
+        <form method="POST" action="/perfil/password" class="stack-form">
+          <input type="hidden" name="_csrf" value="{{.CSRF}}">
+          <div class="field">
+            <label for="current-password">Contraseña actual</label>
+            <input id="current-password" name="current_password" type="password" required autocomplete="current-password">
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="new-password">Nueva contraseña</label>
+              <input id="new-password" name="new_password" type="password" required minlength="8" autocomplete="new-password">
+            </div>
+            <div class="field">
+              <label for="confirm-new-password">Confirmar nueva contraseña</label>
+              <input id="confirm-new-password" name="confirm_password" type="password" required minlength="8" autocomplete="new-password">
+            </div>
+          </div>
+          <button class="btn btn-outline" type="submit">Actualizar contraseña</button>
+        </form>
+      </section>
+
+      <section class="card detail-section">
+        <div class="section-head compact">
+          <div><h2>Facturas</h2><p class="muted">Descarga las facturas de tus reservas pagadas.</p></div>
+        </div>
+        {{if .Invoices}}
+          <div class="invoice-list">
+            {{range .Invoices}}
+            <div class="invoice-row">
+              <div>
+                <strong>{{.Number}}</strong>
+                <span class="muted small">{{date .IssuedAt}} · {{money .TotalAmount}}</span>
+              </div>
+              <a href="/facturas/{{.BookingID}}/descargar" class="btn btn-outline btn-sm">Descargar PDF</a>
+            </div>
+            {{end}}
+          </div>
+        {{else}}
+          <p class="muted small">Aún no tienes facturas. Se generan automáticamente al confirmar un pago.</p>
+        {{end}}
+      </section>
+
+      <section class="card detail-section">
+        <div class="section-head compact">
+          <div><h2>Historial de pagos</h2><p class="muted">Tus últimas transacciones.</p></div>
+        </div>
+        {{if .Payments}}
+          <div class="table-wrap">
+            <table class="table">
+              <thead><tr><th>Fecha</th><th>Reserva</th><th>Método</th><th>Estado</th><th class="right">Valor</th></tr></thead>
+              <tbody>
+                {{range .Payments}}
+                <tr>
+                  <td data-label="Fecha">{{datetime .CreatedAt}}</td>
+                  <td data-label="Reserva">#{{.BookingID}}</td>
+                  <td data-label="Método">{{.Provider}}</td>
+                  <td data-label="Estado"><span class="badge">{{payLabel .Status}}</span></td>
+                  <td data-label="Valor" class="right">{{money .Amount}}</td>
+                </tr>
+                {{end}}
+              </tbody>
+            </table>
+          </div>
+        {{else}}
+          <p class="muted small">Sin pagos registrados.</p>
+        {{end}}
+      </section>
+    </div>
+  </div>
+</div>
+{{end}}

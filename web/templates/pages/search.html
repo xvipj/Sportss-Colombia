@@ -1,0 +1,127 @@
+{{define "content"}}
+<div class="page-head">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Ruta"><a href="/">Inicio</a><span>/</span><span>Buscar canchas</span></nav>
+    <h1>Encuentra tu cancha</h1>
+    <p class="muted">{{.Result.Total}} espacios disponibles para tu próximo juego.</p>
+  </div>
+</div>
+
+<div class="container search-layout section-sm">
+  <button class="btn btn-outline filters-toggle" id="filters-toggle" aria-expanded="false" aria-controls="filters-panel">
+    Filtros de búsqueda
+  </button>
+  <aside class="filters-panel" id="filters-panel">
+    <form action="/buscar" method="GET" class="filters-form">
+      <div class="filter-head"><h2>Filtros</h2><a href="/buscar" class="link-btn">Limpiar</a></div>
+      <div class="field">
+        <label for="f-q">Ubicación o nombre</label>
+        <input id="f-q" name="q" type="search" value="{{.Filters.q}}" placeholder="Ej. Bogotá, Laureles">
+      </div>
+      <div class="field">
+        <label for="f-city">Ciudad</label>
+        <input id="f-city" name="city" type="text" value="{{.Filters.city}}" placeholder="Ej. Medellín">
+      </div>
+      <div class="field">
+        <label for="f-sport">Deporte</label>
+        <select id="f-sport" name="sport">
+          <option value="">Todos los deportes</option>
+          {{range .Sports}}<option value="{{.}}" {{if eq . $.Filters.sport}}selected{{end}}>{{.}}</option>{{end}}
+        </select>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="f-min">Precio mín.</label>
+          <input id="f-min" name="min_price" type="number" min="0" step="1000" value="{{.Filters.min_price}}" placeholder="COP">
+        </div>
+        <div class="field">
+          <label for="f-max">Precio máx.</label>
+          <input id="f-max" name="max_price" type="number" min="0" step="1000" value="{{.Filters.max_price}}" placeholder="COP">
+        </div>
+      </div>
+      <div class="field">
+        <label for="f-date">Fecha disponible</label>
+        <input id="f-date" name="date" type="date" min="{{.Today}}" value="{{.Filters.date}}">
+      </div>
+      <div class="field">
+        <label for="f-hour">Hora</label>
+        <select id="f-hour" name="hour">
+          <option value="">Cualquier hora</option>
+          <option value="06:00" {{if eq $.Filters.hour "06:00"}}selected{{end}}>6:00 AM</option>
+          <option value="07:00" {{if eq $.Filters.hour "07:00"}}selected{{end}}>7:00 AM</option>
+          <option value="08:00" {{if eq $.Filters.hour "08:00"}}selected{{end}}>8:00 AM</option>
+          <option value="09:00" {{if eq $.Filters.hour "09:00"}}selected{{end}}>9:00 AM</option>
+          <option value="10:00" {{if eq $.Filters.hour "10:00"}}selected{{end}}>10:00 AM</option>
+          <option value="11:00" {{if eq $.Filters.hour "11:00"}}selected{{end}}>11:00 AM</option>
+          <option value="12:00" {{if eq $.Filters.hour "12:00"}}selected{{end}}>12:00 PM</option>
+          <option value="13:00" {{if eq $.Filters.hour "13:00"}}selected{{end}}>1:00 PM</option>
+          <option value="14:00" {{if eq $.Filters.hour "14:00"}}selected{{end}}>2:00 PM</option>
+          <option value="15:00" {{if eq $.Filters.hour "15:00"}}selected{{end}}>3:00 PM</option>
+          <option value="16:00" {{if eq $.Filters.hour "16:00"}}selected{{end}}>4:00 PM</option>
+          <option value="17:00" {{if eq $.Filters.hour "17:00"}}selected{{end}}>5:00 PM</option>
+          <option value="18:00" {{if eq $.Filters.hour "18:00"}}selected{{end}}>6:00 PM</option>
+          <option value="19:00" {{if eq $.Filters.hour "19:00"}}selected{{end}}>7:00 PM</option>
+          <option value="20:00" {{if eq $.Filters.hour "20:00"}}selected{{end}}>8:00 PM</option>
+          <option value="21:00" {{if eq $.Filters.hour "21:00"}}selected{{end}}>9:00 PM</option>
+          <option value="22:00" {{if eq $.Filters.hour "22:00"}}selected{{end}}>10:00 PM</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-covered">Cubierta</label>
+        <select id="f-covered" name="covered">
+          <option value="">Cualquiera</option>
+          <option value="si" {{if eq .Filters.covered "si"}}selected{{end}}>Sí, cubierta</option>
+          <option value="no" {{if eq .Filters.covered "no"}}selected{{end}}>No, descubierta</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-block" type="submit">Aplicar filtros</button>
+    </form>
+  </aside>
+
+  <section class="results">
+    <div class="results-bar">
+      <span class="muted small"><strong>{{.Result.Total}}</strong> resultados</span>
+      <form action="/buscar" method="GET" class="sort-form">
+        <input type="hidden" name="q" value="{{.Filters.q}}">
+        <input type="hidden" name="city" value="{{.Filters.city}}">
+        <input type="hidden" name="sport" value="{{.Filters.sport}}">
+        <input type="hidden" name="min_price" value="{{.Filters.min_price}}">
+        <input type="hidden" name="max_price" value="{{.Filters.max_price}}">
+        <input type="hidden" name="date" value="{{.Filters.date}}">
+        <input type="hidden" name="hour" value="{{.Filters.hour}}">
+        <input type="hidden" name="covered" value="{{.Filters.covered}}">
+        <label for="sort" class="sr-only">Ordenar por</label>
+        <select id="sort" name="sort" data-auto-submit>
+          <option value="relevance" {{if eq .Filters.sort "relevance"}}selected{{end}}>Relevancia</option>
+          <option value="price_asc" {{if eq .Filters.sort "price_asc"}}selected{{end}}>Menor precio</option>
+          <option value="price_desc" {{if eq .Filters.sort "price_desc"}}selected{{end}}>Mayor precio</option>
+          <option value="rating" {{if eq .Filters.sort "rating"}}selected{{end}}>Mejor calificadas</option>
+        </select>
+        <noscript><button class="btn btn-sm btn-outline" type="submit">Ordenar</button></noscript>
+      </form>
+    </div>
+
+    {{if .Result.Courts}}
+      <div class="court-grid court-grid-results">
+        {{range .Result.Courts}}{{template "court_card" .}}{{end}}
+      </div>
+      {{if gt .TotalPages 1}}
+      <nav class="pagination" aria-label="Paginación">
+        {{if .PrevURL}}<a href="{{.PrevURL}}" class="page-btn" aria-label="Anterior">←</a>{{else}}<span class="page-btn disabled">←</span>{{end}}
+        {{range .Pages}}
+          <a href="{{.URL}}" class="page-btn {{if .Active}}active{{end}}" {{if .Active}}aria-current="page"{{end}}>{{.Number}}</a>
+        {{end}}
+        {{if .NextURL}}<a href="{{.NextURL}}" class="page-btn" aria-label="Siguiente">→</a>{{else}}<span class="page-btn disabled">→</span>{{end}}
+      </nav>
+      {{end}}
+    {{else}}
+      <div class="empty-state">
+        <div class="empty-icon">🔍</div>
+        <h3>No encontramos canchas con esos filtros</h3>
+        <p>Prueba con otra fecha, cambia el deporte o amplía el rango de precio.</p>
+        <a href="/buscar" class="btn btn-primary">Ver todas las canchas</a>
+      </div>
+    {{end}}
+  </section>
+</div>
+{{end}}

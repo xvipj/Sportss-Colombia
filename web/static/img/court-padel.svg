@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Cancha de pádel">
+  <defs>
+    <linearGradient id="padelbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b6a8a"/>
+      <stop offset="1" stop-color="#06445c"/>
+    </linearGradient>
+    <linearGradient id="padelcourt" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#21a0a8"/>
+      <stop offset="1" stop-color="#147b83"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".26"/>
+      <stop offset=".45" stop-color="#ffffff" stop-opacity=".05"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="pshadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="24" stdDeviation="28" flood-color="#032936" flood-opacity=".45"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="800" fill="url(#padelbg)"/>
+  <circle cx="1060" cy="700" r="300" fill="#f59e0b" opacity=".08"/>
+  <g filter="url(#pshadow)">
+    <rect x="230" y="80" width="740" height="640" rx="10" fill="url(#padelcourt)"/>
+    <rect x="230" y="80" width="740" height="640" rx="10" fill="none" stroke="#e8fbfb" stroke-width="6" opacity=".9"/>
+    <path d="M600 80v640" stroke="#e8fbfb" stroke-width="4" opacity=".95"/>
+    <path d="M230 280h740M230 520h740" stroke="#e8fbfb" stroke-width="4" opacity=".9"/>
+    <path d="M355 280v240M845 280v240" stroke="#e8fbfb" stroke-width="4" opacity=".85"/>
+    <path d="M230 400h740" stroke="#e8fbfb" stroke-width="2.5" opacity=".4" stroke-dasharray="9 10"/>
+    <path d="M390 80v640M810 80v640" stroke="#e8fbfb" stroke-width="2" opacity=".2"/>
+    <rect x="230" y="80" width="740" height="640" rx="10" fill="url(#glass)" stroke="none"/>
+    <rect x="218" y="80" width="26" height="640" rx="6" fill="#bfeef0" opacity=".42"/>
+    <rect x="956" y="80" width="26" height="640" rx="6" fill="#bfeef0" opacity=".42"/>
+  </g>
+  <g>
+    <rect x="588" y="96" width="24" height="608" fill="#0b3c47" opacity=".75"/>
+    <path d="M600 280v240" stroke="#ffffff" stroke-width="3" opacity=".9"/>
+    <path d="M588 280h24M588 520h24" stroke="#ffffff" stroke-width="5" opacity=".95"/>
+  </g>
+  <g transform="translate(905 660)" opacity=".9">
+    <ellipse cx="0" cy="0" rx="19" ry="24" fill="#f59e0b"/>
+    <path d="M0 -24v48M-19 0h38" stroke="#10201d" stroke-width="2" opacity=".45"/>
+  </g>
+  <g transform="translate(250 704)">
+    <rect width="160" height="46" rx="23" fill="#032936" opacity=".6"/>
+    <text x="80" y="30" font-family="Poppins, Arial, sans-serif" font-size="20" font-weight="700" letter-spacing="3" text-anchor="middle" fill="#ffffff">PÁDEL</text>
+  </g>
+</svg>

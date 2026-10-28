@@ -1,0 +1,13 @@
+{{define "content"}}
+<div class="container section">
+  <div class="error-state">
+    <span class="error-code">{{.Status}}</span>
+    <h1>{{.Title}}</h1>
+    <p class="muted">{{.Message}}</p>
+    <div class="error-actions">
+      <a href="/" class="btn btn-primary">Volver al inicio</a>
+      <a href="/buscar" class="btn btn-outline">Buscar canchas</a>
+    </div>
+  </div>
+</div>
+{{end}}

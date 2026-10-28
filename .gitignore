@@ -1,0 +1,24 @@
+# Entorno y secretos
+.env
+.env.*
+!.env.example
+
+# Binarios
+bin/
+*.exe
+storage/sportss.exe
+
+# Datos generados
+storage/*.db
+storage/*.db-shm
+storage/*.db-wal
+storage/invoices/*.pdf
+web/static/uploads/*
+!web/static/uploads/.gitkeep
+
+# Herramientas y sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log

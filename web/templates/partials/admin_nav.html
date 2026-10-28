@@ -1,0 +1,8 @@
+{{define "admin_nav"}}
+<nav class="subnav" aria-label="Administración global">
+  <a href="/admin/reportes" class="{{if eq .CurrentPath "/admin/reportes"}}active{{end}}">Reportes</a>
+  <a href="/admin/usuarios" class="{{if eq .CurrentPath "/admin/usuarios"}}active{{end}}">Usuarios</a>
+  <a href="/admin/canchas" class="{{if eq .CurrentPath "/admin/canchas"}}active{{end}}">Canchas</a>
+  <a href="/admin/resenas" class="{{if eq .CurrentPath "/admin/resenas"}}active{{end}}">Reseñas</a>
+</nav>
+{{end}}

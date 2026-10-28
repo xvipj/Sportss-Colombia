@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Sportss Colombia">
+  <rect width="64" height="64" rx="15" fill="#0f766e"/>
+  <circle cx="32" cy="32" r="19" fill="none" stroke="#ffffff" stroke-width="3" opacity=".92"/>
+  <path d="M32 19.5l10.2 7.4-3.9 12H25.7l-3.9-12L32 19.5z" fill="#f59e0b"/>
+  <path d="M32 32v12.5M22.7 27.5l-7.2-2.6M41.3 27.5l7.2-2.6" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity=".9"/>
+  <circle cx="32" cy="32" r="3.1" fill="#0b5f59"/>
+</svg>

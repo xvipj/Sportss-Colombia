@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Cancha de fútbol 5">
+  <defs>
+    <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1d8a63"/>
+      <stop offset="1" stop-color="#0c5c43"/>
+    </linearGradient>
+    <linearGradient id="light" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".16"/>
+      <stop offset=".55" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="stripes" width="120" height="800" patternUnits="userSpaceOnUse">
+      <rect width="60" height="800" fill="#ffffff" opacity=".035"/>
+    </pattern>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#062e22" flood-opacity=".35"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="800" fill="url(#grass)"/>
+  <rect width="1200" height="800" fill="url(#stripes)"/>
+  <ellipse cx="600" cy="770" rx="520" ry="80" fill="#04281d" opacity=".25"/>
+  <g filter="url(#shadow)">
+    <rect x="90" y="70" width="1020" height="660" rx="18" fill="none" stroke="#ffffff" stroke-width="6" opacity=".9"/>
+    <path d="M600 70v660" stroke="#ffffff" stroke-width="4" opacity=".75"/>
+    <circle cx="600" cy="400" r="96" fill="none" stroke="#ffffff" stroke-width="4" opacity=".8"/>
+    <circle cx="600" cy="400" r="7" fill="#ffffff" opacity=".85"/>
+    <rect x="300" y="70" width="600" height="120" fill="none" stroke="#ffffff" stroke-width="4" opacity=".8"/>
+    <rect x="300" y="610" width="600" height="120" fill="none" stroke="#ffffff" stroke-width="4" opacity=".8"/>
+    <rect x="450" y="70" width="300" height="54" fill="none" stroke="#ffffff" stroke-width="4" opacity=".7"/>
+    <rect x="450" y="676" width="300" height="54" fill="none" stroke="#ffffff" stroke-width="4" opacity=".7"/>
+    <path d="M390 70a70 70 0 000 120M810 70a70 70 0 010 120" fill="none" stroke="#ffffff" stroke-width="4" opacity=".55"/>
+    <path d="M390 730a70 70 0 010-120M810 730a70 70 0 000-120" fill="none" stroke="#ffffff" stroke-width="4" opacity=".55"/>
+    <rect x="468" y="46" width="264" height="24" rx="6" fill="#f8fafc" opacity=".9"/>
+    <rect x="468" y="730" width="264" height="24" rx="6" fill="#f8fafc" opacity=".9"/>
+    <path d="M468 70v-24M732 70v-24M468 730v24M732 730v24" stroke="#ffffff" stroke-width="4" opacity=".6"/>
+  </g>
+  <rect width="1200" height="800" fill="url(#light)"/>
+  <g transform="translate(600 400)">
+    <circle r="34" fill="#ffffff" opacity=".95"/>
+    <path d="M0 -22l20 15-8 24h-24l-8-24 20-15z" fill="#10201d"/>
+    <path d="M0 22v12M-20-7l-13-5M20-7l13-5" stroke="#10201d" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(120 704)">
+    <rect width="214" height="46" rx="23" fill="#062e22" opacity=".6"/>
+    <text x="107" y="30" font-family="Poppins, Arial, sans-serif" font-size="20" font-weight="700" letter-spacing="3" text-anchor="middle" fill="#ffffff">FÚTBOL 5</text>
+  </g>
+</svg>

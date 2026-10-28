@@ -1,0 +1,54 @@
+{{define "content"}}
+<div class="page-head page-head-compact">
+  <div class="container">
+    {{template "panel_nav" .}}
+    <div class="page-head-row">
+      <div>
+        <span class="eyebrow">Panel empresa</span>
+        <h1>Reseñas</h1>
+        <p class="muted">{{.Total}} opiniones de jugadores verificados.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container section-sm">
+  {{if .Reviews}}
+  <div class="review-admin-list">
+    {{range .Reviews}}
+    <article class="card review-admin">
+      <div class="review-head">
+        <span class="avatar avatar-sm avatar-initials">{{initials .User.Name}}</span>
+        <div class="grow">
+          <strong>{{.User.Name}}</strong>
+          <span class="muted small block">{{date .CreatedAt}} · {{.Court.Name}}</span>
+        </div>
+        <span class="review-stars" aria-label="{{.Rating}} de 5">{{range seq .Rating}}★{{end}}</span>
+      </div>
+      <p>{{.Comment}}</p>
+      {{if .OwnerResponse}}
+        <div class="owner-response"><strong>Tu respuesta</strong><p>{{.OwnerResponse}}</p></div>
+      {{end}}
+      <form method="POST" action="/panel/resenas/{{.ID}}/responder" class="response-form">
+        <input type="hidden" name="_csrf" value="{{$.CSRF}}">
+        <div class="field">
+          <label for="response-{{.ID}}">{{if .OwnerResponse}}Actualizar respuesta{{else}}Responder públicamente{{end}}</label>
+          <textarea id="response-{{.ID}}" name="response" rows="2" maxlength="1000" required placeholder="Gracias por tu visita...">{{.OwnerResponse}}</textarea>
+        </div>
+        <button class="btn btn-outline btn-sm" type="submit">Publicar respuesta</button>
+      </form>
+    </article>
+    {{end}}
+  </div>
+  {{if gt (len .Pages) 1}}
+  <nav class="pagination" aria-label="Paginación">{{range .Pages}}<a href="{{.URL}}" class="page-btn {{if .Active}}active{{end}}">{{.Number}}</a>{{end}}</nav>
+  {{end}}
+  {{else}}
+  <div class="empty-state">
+    <div class="empty-icon">⭐</div>
+    <h3>Aún no tienes reseñas</h3>
+    <p>Cuando un jugador complete una reserva podrá calificar tu cancha. Responder mejora la confianza.</p>
+  </div>
+  {{end}}
+</div>
+{{end}}

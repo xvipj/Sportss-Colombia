@@ -1,0 +1,133 @@
+{{define "content"}}
+<section class="hero">
+  <div class="hero-orb hero-orb-1" aria-hidden="true"></div>
+  <div class="hero-orb hero-orb-2" aria-hidden="true"></div>
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">Canchas en toda Colombia</span>
+      <h1>Tu próximo partido<br><span>empieza aquí.</span></h1>
+      <p class="hero-lead">Encuentra la cancha perfecta, elige tu hora y paga en segundos. Sin llamadas, sin complicaciones.</p>
+      <form class="search-card" action="/buscar" method="GET" role="search">
+        <div class="search-field grow">
+          <label for="hero-q">¿Dónde o qué buscas?</label>
+          <div class="input-icon">
+            <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+            <input id="hero-q" name="q" type="search" placeholder="Ciudad, barrio o cancha" autocomplete="off">
+          </div>
+        </div>
+        <div class="search-field">
+          <label for="hero-sport">Deporte</label>
+          <select id="hero-sport" name="sport">
+            <option value="">Todos</option>
+            {{range .Sports}}<option value="{{.}}">{{.}}</option>{{end}}
+          </select>
+        </div>
+        <div class="search-field">
+          <label for="hero-date">Fecha</label>
+          <input id="hero-date" name="date" type="date" min="{{.Today}}">
+        </div>
+        <button class="btn btn-primary search-submit" type="submit">
+          Buscar
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </form>
+      <div class="sport-links" aria-label="Deportes populares">
+        <span class="muted small">Populares:</span>
+        <a href="/buscar?sport=F%C3%BAtbol%205" class="chip">Fútbol 5</a>
+        <a href="/buscar?sport=P%C3%A1del" class="chip">Pádel</a>
+        <a href="/buscar?sport=Baloncesto" class="chip">Baloncesto</a>
+        <a href="/buscar?sport=Tenis" class="chip">Tenis</a>
+      </div>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <div class="visual-card visual-main">
+        <div class="visual-sport">⚽</div>
+        <div class="visual-lines"></div>
+        <div class="visual-tag">Hoy · 7:00 PM</div>
+        <div class="visual-info">
+          <strong>El Campín Fútbol 5</strong>
+          <span>Bogotá · Cubierta</span>
+        </div>
+      </div>
+      <div class="visual-card visual-float">
+        <span class="check-circle">✓</span>
+        <div><strong>Reserva confirmada</strong><span>Pago seguro</span></div>
+      </div>
+      <div class="visual-card visual-rating">
+        <span class="big-rating">4.9</span>
+        <div><span class="stars-text">★★★★★</span><span>+{{.TotalCourts}} canchas</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section container">
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">Recomendadas</span>
+      <h2>Canchas destacadas</h2>
+      <p class="muted">Las mejor calificadas por jugadores como tú.</p>
+    </div>
+    <a href="/buscar" class="btn btn-outline">Ver todas</a>
+  </div>
+  {{if .Featured}}
+    <div class="court-grid">
+      {{range .Featured}}{{template "court_card" .}}{{end}}
+    </div>
+  {{else}}
+    <div class="empty-state">
+      <div class="empty-icon">🏟️</div>
+      <h3>Aún no hay canchas destacadas</h3>
+      <p>Estamos sumando nuevos espacios. Vuelve pronto o publica tu cancha.</p>
+      <a href="/registro?tipo=empresa" class="btn btn-primary">Publicar mi cancha</a>
+    </div>
+  {{end}}
+</section>
+
+<section class="section section-soft">
+  <div class="container">
+    <div class="section-head centered">
+      <div>
+        <span class="eyebrow">Así de fácil</span>
+        <h2>Reserva en tres pasos</h2>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <span class="step-number">01</span>
+        <div class="step-icon">🔎</div>
+        <h3>Encuentra tu cancha</h3>
+        <p>Filtra por ciudad, deporte, fecha y hora disponible.</p>
+      </div>
+      <div class="step">
+        <span class="step-number">02</span>
+        <div class="step-icon">🗓️</div>
+        <h3>Elige tus horas</h3>
+        <p>Selecciona uno o varios bloques consecutivos el mismo día.</p>
+      </div>
+      <div class="step">
+        <span class="step-number">03</span>
+        <div class="step-icon">💳</div>
+        <h3>Paga y juega</h3>
+        <p>Paga seguro con Mercado Pago y recibe tu factura al instante.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section container">
+  <div class="cta-panel">
+    <div>
+      <span class="eyebrow eyebrow-light">Para dueños de canchas</span>
+      <h2>Menos llamadas.<br>Más reservas.</h2>
+      <p>Publica tu cancha, controla tu agenda y recibe pagos en línea. Tú pones el espacio, nosotros la tecnología.</p>
+      <a href="/registro?tipo=empresa" class="btn btn-accent">Crear cuenta empresa</a>
+    </div>
+    <div class="cta-stats">
+      <div><strong>10%</strong><span>comisión clara por reserva</span></div>
+      <div><strong>24/7</strong><span>reservas automáticas</span></div>
+      <div><strong>100%</strong><span>pagos digitales</span></div>
+    </div>
+  </div>
+</section>
+{{end}}

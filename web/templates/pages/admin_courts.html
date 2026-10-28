@@ -1,0 +1,66 @@
+{{define "content"}}
+<div class="page-head page-head-compact">
+  <div class="container">
+    {{template "admin_nav" .}}
+    <div class="page-head-row">
+      <div>
+        <span class="eyebrow">Super administrador</span>
+        <h1>Canchas</h1>
+        <p class="muted">{{.Total}} canchas en la plataforma.</p>
+      </div>
+      <form method="GET" action="/admin/canchas" class="inline-search">
+        <label for="q" class="sr-only">Buscar canchas</label>
+        <input id="q" name="q" type="search" value="{{.Search}}" placeholder="Nombre, ciudad o barrio">
+        <select name="status" aria-label="Estado">
+          <option value="">Todas</option>
+          <option value="activa" {{if eq .Status "activa"}}selected{{end}}>Activas</option>
+          <option value="pausada" {{if eq .Status "pausada"}}selected{{end}}>Pausadas</option>
+        </select>
+        <button class="btn btn-outline btn-sm" type="submit">Buscar</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="container section-sm">
+  <div class="card table-card">
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>Cancha</th><th>Dueño</th><th>Ubicación</th><th>Precio/h</th><th>Rating</th><th>Estado</th><th class="right">Acciones</th></tr></thead>
+        <tbody>
+          {{range .Courts}}
+          <tr>
+            <td data-label="Cancha"><strong>{{.Name}}</strong><span class="muted small block">{{.Sport}} · {{.Surface}}</span></td>
+            <td data-label="Dueño">{{.Owner.BusinessName}}<span class="muted small block">{{.Owner.Email}}</span></td>
+            <td data-label="Ubicación">{{.City}}<span class="muted small block">{{.Neighborhood}}</span></td>
+            <td data-label="Precio/h">{{money .PricePerHour}}</td>
+            <td data-label="Rating">★ {{stars .RatingAvg}} <span class="muted small">({{.RatingCount}})</span></td>
+            <td data-label="Estado"><span class="badge {{if eq .Status "activa"}}badge-ok{{else}}badge-warn{{end}}">{{courtStatus .Status}}</span></td>
+            <td data-label="Acciones" class="right table-actions">
+              <a href="/canchas/{{.ID}}" class="btn btn-ghost btn-xs">Ver</a>
+              <form method="POST" action="/admin/canchas/{{.ID}}/estado">
+                <input type="hidden" name="_csrf" value="{{$.CSRF}}">
+                {{if eq .Status "activa"}}
+                  <input type="hidden" name="status" value="pausada">
+                  <button class="btn btn-ghost btn-xs text-danger" type="submit">Pausar</button>
+                {{else}}
+                  <input type="hidden" name="status" value="activa">
+                  <button class="btn btn-ghost btn-xs" type="submit">Activar</button>
+                {{end}}
+              </form>
+              <form method="POST" action="/admin/canchas/{{.ID}}/eliminar" data-confirm="¿Eliminar la cancha {{.Name}}?">
+                <input type="hidden" name="_csrf" value="{{$.CSRF}}">
+                <button class="btn btn-ghost btn-xs text-danger" type="submit">Eliminar</button>
+              </form>
+            </td>
+          </tr>
+          {{end}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {{if gt (len .Pages) 1}}
+  <nav class="pagination" aria-label="Paginación">{{range .Pages}}<a href="{{.URL}}" class="page-btn {{if .Active}}active{{end}}">{{.Number}}</a>{{end}}</nav>
+  {{end}}
+</div>
+{{end}}

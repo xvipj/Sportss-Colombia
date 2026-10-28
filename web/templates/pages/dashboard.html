@@ -1,0 +1,126 @@
+{{define "content"}}
+<div class="page-head page-head-compact">
+  <div class="container">
+    {{template "panel_nav" .}}
+    <div class="page-head-row">
+      <div>
+        <span class="eyebrow">Panel empresa</span>
+        <h1>Hola, {{.User.Name}}</h1>
+        <p class="muted">Así va tu negocio entre {{date .From}} y {{date .To}}.</p>
+      </div>
+      <form method="GET" action="/panel" class="range-form">
+        <div class="field"><label for="from">Desde</label><input id="from" type="date" name="from" value="{{.FromISO}}"></div>
+        <div class="field"><label for="to">Hasta</label><input id="to" type="date" name="to" value="{{.ToISO}}"></div>
+        <button class="btn btn-outline btn-sm" type="submit">Aplicar</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="container section-sm">
+  <div class="stats-grid">
+    <div class="stat-card stat-primary">
+      <span class="stat-label">Ingresos del periodo</span>
+      <strong class="stat-value">{{money .Summary.Revenue.Total}}</strong>
+      <span class="stat-foot">En {{.Summary.Revenue.Bookings}} reservas</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Ingreso neto</span>
+      <strong class="stat-value">{{money .Summary.Revenue.Net}}</strong>
+      <span class="stat-foot">Después de comisión</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Comisión plataforma</span>
+      <strong class="stat-value">{{money .Summary.Revenue.Commission}}</strong>
+      <span class="stat-foot">Valor pagado a Sportss</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Reservas</span>
+      <strong class="stat-value">{{.Summary.Revenue.Bookings}}</strong>
+      <span class="stat-foot">{{.Summary.Revenue.Confirmed}} confirmadas · {{.Summary.Revenue.Cancelled}} canceladas</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Ocupación</span>
+      <strong class="stat-value">{{pct .Summary.OccupancyRate}}</strong>
+      <span class="stat-foot">{{.Summary.TotalCourts}} canchas publicadas</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Calificación promedio</span>
+      <strong class="stat-value">{{stars .Summary.AvgRating}} <span class="stat-star">★</span></strong>
+      <span class="stat-foot">{{.ReviewCount}} reseñas recibidas</span>
+    </div>
+  </div>
+
+  <div class="quick-stats">
+    <span><strong>{{.Summary.TodayBookings}}</strong> reservas hoy</span>
+    <span><strong>{{.Summary.WeekBookings}}</strong> esta semana</span>
+    <span><strong>{{.Summary.MonthBookings}}</strong> este mes</span>
+    {{if .Summary.MostBooked}}<span>Cancha estrella: <strong>{{.Summary.MostBooked.Name}}</strong></span>{{end}}
+  </div>
+
+  <div class="dashboard-grid">
+    <section class="card chart-card">
+      <div class="section-head compact"><div><h2>Reservas en el tiempo</h2><p class="muted">Cantidad de reservas por día.</p></div></div>
+      <div class="chart-wrap"><canvas id="bookings-chart" data-chart="{{json .Chart}}" aria-label="Gráfica de reservas" role="img"></canvas></div>
+    </section>
+    <section class="card chart-card">
+      <div class="section-head compact"><div><h2>Ingresos por cancha</h2><p class="muted">Canchas con mayor facturación.</p></div></div>
+      <div class="chart-wrap"><canvas id="courts-chart" data-chart="{{json .Chart}}" aria-label="Gráfica de ingresos por cancha" role="img"></canvas></div>
+    </section>
+  </div>
+
+  <div class="dashboard-grid dashboard-bottom">
+    <section class="card">
+      <div class="section-head compact"><div><h2>Horas pico</h2><p class="muted">Cuándo prefieren jugar tus clientes.</p></div></div>
+      {{if .Summary.PeakHours}}
+        <div class="peak-list">
+          {{range .Summary.PeakHours}}
+          <div class="peak-row"><span class="peak-hour">{{.Hour}}</span><div class="peak-bar"><span style="width: {{.Count}}0%"></span></div><strong>{{.Count}}</strong></div>
+          {{end}}
+        </div>
+      {{else}}<p class="muted small">Aún no hay datos suficientes.</p>{{end}}
+    </section>
+    <section class="card">
+      <div class="section-head compact"><div><h2>Rendimiento por cancha</h2></div><a href="/panel/reservas" class="link-btn">Ver reservas</a></div>
+      {{if .Summary.CourtStats}}
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Cancha</th><th>Reservas</th><th class="right">Ingresos</th><th class="right">Neto</th></tr></thead>
+          <tbody>
+            {{range .Summary.CourtStats}}
+            <tr><td data-label="Cancha">{{.Name}}</td><td data-label="Reservas">{{.Bookings}}</td><td data-label="Ingresos" class="right">{{money .Revenue}}</td><td data-label="Neto" class="right">{{money .Net}}</td></tr>
+            {{end}}
+          </tbody>
+        </table>
+      </div>
+      {{else}}<p class="muted small">Publica tu primera cancha para comenzar a ver métricas.</p>{{end}}
+    </section>
+  </div>
+
+  <section class="card">
+    <div class="section-head compact">
+      <div><h2>Reservas recientes</h2><p class="muted">Últimos movimientos en tus canchas.</p></div>
+      <a href="/panel/reservas" class="link-btn">Ver todas</a>
+    </div>
+    {{if .Recent}}
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>Cliente</th><th>Cancha</th><th>Fecha</th><th>Horario</th><th>Estado</th><th class="right">Total</th></tr></thead>
+        <tbody>
+          {{range .Recent}}
+          <tr>
+            <td data-label="Cliente">{{.User.Name}}</td>
+            <td data-label="Cancha">{{.Court.Name}}</td>
+            <td data-label="Fecha">{{date .Date}}</td>
+            <td data-label="Horario">{{.StartTime}} – {{.EndTime}}</td>
+            <td data-label="Estado"><span class="badge badge-{{statusClass .Status}}">{{statusLabel .Status}}</span></td>
+            <td data-label="Total" class="right">{{money .TotalAmount}}</td>
+          </tr>
+          {{end}}
+        </tbody>
+      </table>
+    </div>
+    {{else}}<div class="empty-inline"><p>Todavía no tienes reservas. Comparte el enlace de tus canchas.</p></div>{{end}}
+  </section>
+</div>
+{{end}}

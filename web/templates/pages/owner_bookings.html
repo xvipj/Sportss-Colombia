@@ -1,0 +1,74 @@
+{{define "content"}}
+<div class="page-head page-head-compact">
+  <div class="container">
+    {{template "panel_nav" .}}
+    <div class="page-head-row">
+      <div>
+        <span class="eyebrow">Panel empresa</span>
+        <h1>Reservas</h1>
+        <p class="muted">{{.Total}} reservas registradas.</p>
+      </div>
+      <form method="GET" action="/panel/reservas" class="range-form">
+        <div class="field"><label for="status">Estado</label>
+          <select id="status" name="status">
+            <option value="">Todos</option>
+            {{range .Statuses}}<option value="{{.}}" {{if eq $.Status .}}selected{{end}}>{{statusLabel .}}</option>{{end}}
+          </select>
+        </div>
+        <div class="field"><label for="date">Fecha</label><input id="date" type="date" name="date" value="{{.Date}}"></div>
+        <button class="btn btn-outline btn-sm" type="submit">Filtrar</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="container section-sm">
+  {{if .Bookings}}
+  <div class="card table-card">
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>Cliente</th><th>Cancha</th><th>Fecha / hora</th><th>Horas</th><th>Estado</th><th class="right">Total</th><th class="right">Acciones</th></tr></thead>
+        <tbody>
+          {{range .Bookings}}
+          <tr>
+            <td data-label="Cliente"><strong>{{.User.Name}}</strong><span class="muted small block">{{.User.Phone}}</span></td>
+            <td data-label="Cancha">{{.Court.Name}}</td>
+            <td data-label="Fecha / hora">{{date .Date}}<span class="muted small block">{{.StartTime}} – {{.EndTime}}</span></td>
+            <td data-label="Horas">{{.Hours}}</td>
+            <td data-label="Estado"><span class="badge badge-{{statusClass .Status}}">{{statusLabel .Status}}</span></td>
+            <td data-label="Total" class="right">{{money .TotalAmount}}</td>
+            <td data-label="Acciones" class="right table-actions">
+              <a href="/facturas/{{.ID}}/descargar" class="btn btn-ghost btn-xs">Factura</a>
+              {{if eq .Status "confirmada"}}
+              <form method="POST" action="/panel/reservas/{{.ID}}/completar">
+                <input type="hidden" name="_csrf" value="{{$.CSRF}}">
+                <button class="btn btn-ghost btn-xs" type="submit">Completar</button>
+              </form>
+              {{end}}
+              {{if or (eq .Status "confirmada") (eq .Status "pendiente_pago")}}
+              <form method="POST" action="/panel/reservas/{{.ID}}/cancelar" data-confirm="¿Cancelar esta reserva y liberar el horario?">
+                <input type="hidden" name="_csrf" value="{{$.CSRF}}">
+                <button class="btn btn-ghost btn-xs text-danger" type="submit">Cancelar</button>
+              </form>
+              {{end}}
+            </td>
+          </tr>
+          {{end}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {{if gt (len .Pages) 1}}
+  <nav class="pagination" aria-label="Paginación">
+    {{range .Pages}}<a href="{{.URL}}" class="page-btn {{if .Active}}active{{end}}">{{.Number}}</a>{{end}}
+  </nav>
+  {{end}}
+  {{else}}
+  <div class="empty-state">
+    <div class="empty-icon">📅</div>
+    <h3>No hay reservas con esos filtros</h3>
+    <p>Las reservas de tus canchas aparecerán aquí en cuanto los jugadores empiecen a reservar.</p>
+  </div>
+  {{end}}
+</div>
+{{end}}

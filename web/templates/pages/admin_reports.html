@@ -1,0 +1,63 @@
+{{define "content"}}
+<div class="page-head page-head-compact">
+  <div class="container">
+    {{template "admin_nav" .}}
+    <div class="page-head-row">
+      <div>
+        <span class="eyebrow">Super administrador</span>
+        <h1>Reportes globales</h1>
+        <p class="muted">Comisiones, ingresos y actividad de toda la plataforma.</p>
+      </div>
+      <form method="GET" action="/admin/reportes" class="range-form">
+        <div class="field"><label for="from">Desde</label><input id="from" type="date" name="from" value="{{.FromISO}}"></div>
+        <div class="field"><label for="to">Hasta</label><input id="to" type="date" name="to" value="{{.ToISO}}"></div>
+        <button class="btn btn-outline btn-sm" type="submit">Aplicar</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="container section-sm">
+  <div class="stats-grid">
+    <div class="stat-card stat-primary"><span class="stat-label">Volumen transado</span><strong class="stat-value">{{money .Summary.Revenue.Total}}</strong><span class="stat-foot">Reservas confirmadas y completadas</span></div>
+    <div class="stat-card"><span class="stat-label">Comisión Sportss</span><strong class="stat-value">{{money .Summary.Revenue.Commission}}</strong><span class="stat-foot">Ingreso de la plataforma</span></div>
+    <div class="stat-card"><span class="stat-label">Neto a dueños</span><strong class="stat-value">{{money .Summary.Revenue.Net}}</strong><span class="stat-foot">Liquidación estimada</span></div>
+    <div class="stat-card"><span class="stat-label">Reservas</span><strong class="stat-value">{{.Summary.Revenue.Bookings}}</strong><span class="stat-foot">{{.Summary.Revenue.Confirmed}} confirmadas · {{.Summary.Revenue.Cancelled}} canceladas</span></div>
+    <div class="stat-card"><span class="stat-label">Usuarios</span><strong class="stat-value">{{.Users}}</strong><span class="stat-foot">Cuentas registradas</span></div>
+    <div class="stat-card"><span class="stat-label">Canchas</span><strong class="stat-value">{{.Courts}}</strong><span class="stat-foot">En toda Colombia</span></div>
+  </div>
+
+  <div class="dashboard-grid">
+    <section class="card chart-card">
+      <div class="section-head compact"><div><h2>Reservas por día</h2><p class="muted">Actividad de la plataforma.</p></div></div>
+      <div class="chart-wrap"><canvas id="bookings-chart" data-chart="{{json .Chart}}" aria-label="Reservas por día" role="img"></canvas></div>
+    </section>
+    <section class="card chart-card">
+      <div class="section-head compact"><div><h2>Ingresos por cancha</h2><p class="muted">Top de facturación.</p></div></div>
+      <div class="chart-wrap"><canvas id="courts-chart" data-chart="{{json .Chart}}" aria-label="Ingresos por cancha" role="img"></canvas></div>
+    </section>
+  </div>
+
+  <section class="card">
+    <div class="section-head compact"><div><h2>Detalle de comisiones</h2><p class="muted">Liquidación por cancha en el periodo.</p></div></div>
+    {{if .Summary.CourtStats}}
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>Cancha</th><th>Reservas</th><th>Horas</th><th class="right">Volumen</th><th class="right">Comisión</th><th class="right">Neto</th></tr></thead>
+        <tbody>
+          {{range .Summary.CourtStats}}
+          <tr>
+            <td data-label="Cancha">{{.Name}}</td><td data-label="Reservas">{{.Bookings}}</td><td data-label="Horas">{{.Hours}}</td>
+            <td data-label="Volumen" class="right">{{money .Revenue}}</td>
+            <td data-label="Comisión" class="right">{{money .Commission}}</td>
+            <td data-label="Neto" class="right">{{money .Net}}</td>
+          </tr>
+          {{end}}
+        </tbody>
+        <tfoot><tr><th colspan="3">Totales</th><th class="right">{{money .Summary.Revenue.Total}}</th><th class="right">{{money .Summary.Revenue.Commission}}</th><th class="right">{{money .Summary.Revenue.Net}}</th></tr></tfoot>
+      </table>
+    </div>
+    {{else}}<p class="muted small">Sin reservas pagadas en el periodo.</p>{{end}}
+  </section>
+</div>
+{{end}}

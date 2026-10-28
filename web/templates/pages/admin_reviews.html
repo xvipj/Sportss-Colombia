@@ -1,0 +1,51 @@
+{{define "content"}}
+<div class="page-head page-head-compact">
+  <div class="container">
+    {{template "admin_nav" .}}
+    <div class="page-head-row">
+      <div>
+        <span class="eyebrow">Super administrador</span>
+        <h1>Moderación de reseñas</h1>
+        <p class="muted">{{.Total}} reseñas publicadas.</p>
+      </div>
+      <form method="GET" action="/admin/resenas" class="inline-search">
+        <label for="q" class="sr-only">Buscar reseñas</label>
+        <input id="q" name="q" type="search" value="{{.Search}}" placeholder="Buscar en comentarios">
+        <button class="btn btn-outline btn-sm" type="submit">Buscar</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="container section-sm">
+  <div class="admin-review-grid">
+    {{range .Reviews}}
+    <article class="card review-admin {{if .Hidden}}is-hidden{{end}}">
+      <div class="review-head">
+        <span class="avatar avatar-sm avatar-initials">{{initials .User.Name}}</span>
+        <div class="grow">
+          <strong>{{.User.Name}}</strong>
+          <span class="muted small block">{{.Court.Name}} · {{date .CreatedAt}}</span>
+        </div>
+        <span class="review-stars">{{range seq .Rating}}★{{end}}</span>
+      </div>
+      <p>{{.Comment}}</p>
+      {{if .OwnerResponse}}<div class="owner-response"><strong>Respuesta del dueño</strong><p>{{.OwnerResponse}}</p></div>{{end}}
+      <div class="review-admin-foot">
+        <span class="badge {{if .Hidden}}badge-danger{{else}}badge-ok{{end}}">{{if .Hidden}}Oculta{{else}}Visible{{end}}</span>
+        <form method="POST" action="/admin/resenas/{{.ID}}/ocultar">
+          <input type="hidden" name="_csrf" value="{{$.CSRF}}">
+          <input type="hidden" name="hidden" value="{{if .Hidden}}false{{else}}true{{end}}">
+          <button class="btn btn-ghost btn-sm {{if not .Hidden}}text-danger{{end}}" type="submit">{{if .Hidden}}Mostrar{{else}}Ocultar{{end}}</button>
+        </form>
+      </div>
+    </article>
+    {{else}}
+    <div class="empty-state"><div class="empty-icon">⭐</div><h3>Sin reseñas</h3><p>No hay reseñas que coincidan con la búsqueda.</p></div>
+    {{end}}
+  </div>
+  {{if gt (len .Pages) 1}}
+  <nav class="pagination" aria-label="Paginación">{{range .Pages}}<a href="{{.URL}}" class="page-btn {{if .Active}}active{{end}}">{{.Number}}</a>{{end}}</nav>
+  {{end}}
+</div>
+{{end}}

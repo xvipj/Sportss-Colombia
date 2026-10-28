@@ -1,0 +1,192 @@
+{{define "content"}}
+<div class="container section-sm">
+  <nav class="breadcrumb" aria-label="Ruta">
+    <a href="/">Inicio</a><span>/</span><a href="/buscar">Canchas</a><span>/</span><span>{{.Court.City}}</span>
+  </nav>
+
+  <div class="detail-layout">
+    <div class="detail-main">
+      <section class="gallery">
+        {{if .Court.Photos}}
+          <div class="gallery-main">
+            <img id="gallery-main-img" src="{{(index .Court.Photos 0).Path}}" alt="{{.Court.Name}}">
+          </div>
+          {{if gt (len .Court.Photos) 1}}
+          <div class="gallery-thumbs">
+            {{range .Court.Photos}}
+              <button type="button" class="gallery-thumb" data-gallery-src="{{.Path}}" aria-label="Ver foto">
+                <img src="{{.Path}}" alt="">
+              </button>
+            {{end}}
+          </div>
+          {{end}}
+        {{else}}
+          <div class="gallery-main gallery-placeholder"><span>{{.Court.Sport}}</span></div>
+        {{end}}
+      </section>
+
+      <div class="detail-title">
+        <div>
+          <div class="court-topline">
+            <span class="sport-pill">{{.Court.Sport}}</span>
+            {{if .Court.Covered}}<span class="badge badge-ok">Cubierta</span>{{else}}<span class="badge">Descubierta</span>{{end}}
+            <span class="badge">{{.Court.Surface}}</span>
+          </div>
+          <h1>{{.Court.Name}}</h1>
+          <p class="location">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1116 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            {{.Court.Address}}, {{.Court.Neighborhood}}, {{.Court.City}}
+          </p>
+        </div>
+        <div class="detail-rating">
+          {{if gt .Court.RatingCount 0}}
+            <strong>{{stars .Court.RatingAvg}}</strong>
+            <span class="stars-text" aria-label="Calificación {{stars .Court.RatingAvg}} de 5">★★★★★</span>
+            <span class="muted small">{{.Court.RatingCount}} reseñas</span>
+          {{else}}
+            <span class="badge">Nueva cancha</span>
+          {{end}}
+        </div>
+      </div>
+
+      <section class="card detail-section">
+        <h2>Sobre esta cancha</h2>
+        <p>{{.Court.Description}}</p>
+        <div class="amenities">
+          <span class="amenity"><span aria-hidden="true">📏</span> {{.Court.Length}} × {{.Court.Width}} m</span>
+          {{if .Court.Floodlights}}<span class="amenity"><span aria-hidden="true">💡</span> Iluminación nocturna</span>{{end}}
+          {{if .Court.Parking}}<span class="amenity"><span aria-hidden="true">🅿️</span> Parqueadero</span>{{end}}
+          {{if .Court.Bathrooms}}<span class="amenity"><span aria-hidden="true">🚻</span> Baños</span>{{end}}
+          {{if .Court.Lockers}}<span class="amenity"><span aria-hidden="true">🔐</span> Vestuarios</span>{{end}}
+          {{if .Court.Cafeteria}}<span class="amenity"><span aria-hidden="true">☕</span> Cafetería</span>{{end}}
+        </div>
+        <div class="schedule">
+          <div><span class="muted small">Horario</span><strong>{{.Court.OpenTime}} – {{.Court.CloseTime}}</strong></div>
+          <div><span class="muted small">Días</span><strong>{{daysLabel .Court.AvailableDays}}</strong></div>
+        </div>
+        {{if .Court.Owner.BusinessName}}<p class="muted small">Publicado por {{.Court.Owner.BusinessName}}.</p>{{end}}
+      </section>
+
+      {{if .BBox}}
+      <section class="card detail-section">
+        <h2>Ubicación</h2>
+        <div class="map-embed">
+          <iframe title="Mapa de {{.Court.Name}}" src="https://www.openstreetmap.org/export/embed.html?bbox={{.BBox}}&amp;layer=mapnik&amp;marker={{.Court.Latitude}},{{.Court.Longitude}}" loading="lazy"></iframe>
+        </div>
+        <p class="muted small">{{.Court.Address}}, {{.Court.Neighborhood}}, {{.Court.City}}, {{.Court.Department}}.</p>
+      </section>
+      {{end}}
+
+      <section class="card detail-section" id="resenas">
+        <div class="section-head compact">
+          <div>
+            <h2>Reseñas de jugadores</h2>
+            <p class="muted">{{.Court.RatingCount}} experiencias verificadas.</p>
+          </div>
+          {{if .CanReview}}
+            <button class="btn btn-outline btn-sm" id="open-review" data-booking-id="{{.ReviewBookingID}}">Escribir reseña</button>
+          {{end}}
+        </div>
+        {{if .Reviews}}
+        <div class="review-list">
+          {{range .Reviews}}
+          <article class="review">
+            <div class="review-head">
+              <span class="avatar avatar-sm avatar-initials">{{initials .User.Name}}</span>
+              <div>
+                <strong>{{.User.Name}}</strong>
+                <span class="muted small">{{date .CreatedAt}}</span>
+              </div>
+              <span class="review-stars" aria-label="{{.Rating}} de 5 estrellas">{{range seq .Rating}}★{{end}}</span>
+            </div>
+            <p>{{.Comment}}</p>
+            {{if .OwnerResponse}}
+              <div class="owner-response">
+                <strong>Respuesta del establecimiento</strong>
+                <p>{{.OwnerResponse}}</p>
+              </div>
+            {{end}}
+          </article>
+          {{end}}
+        </div>
+        {{else}}
+          <div class="empty-inline">
+            <p>Aún no hay reseñas. Las reseñas solo las dejan jugadores que completaron una reserva.</p>
+          </div>
+        {{end}}
+      </section>
+    </div>
+
+    <aside class="booking-aside">
+      <div class="card booking-widget" id="booking-widget"
+           data-court-id="{{.Court.ID}}"
+           data-price="{{.Court.PricePerHour}}"
+           data-today="{{.Today}}"
+           data-max="{{.MaxDate}}"
+           data-authenticated="{{if .User}}true{{else}}false{{end}}">
+        <div class="booking-price"><strong>{{money .Court.PricePerHour}}</strong><span>/ hora</span></div>
+        {{if .IsOwner}}
+          <div class="notice notice-info">Esta cancha es tuya. Puedes ver la disponibilidad, pero no reservarla desde aquí.</div>
+        {{end}}
+        <div class="field">
+          <label for="booking-date">Selecciona la fecha</label>
+          <input id="booking-date" type="date" value="{{.DateISO}}" min="{{.Today}}" max="{{.MaxDate}}">
+        </div>
+        <div class="slots-head"><span>Horas disponibles</span><span class="muted small" id="slots-date-label">{{date .Date}}</span></div>
+        <div class="slot-grid" id="slot-grid">
+          {{range .Slots}}
+            <button type="button" class="slot {{if not .Available}}is-busy{{end}}" data-hour="{{.Hour}}" data-end="{{.End}}" {{if not .Available}}disabled title="{{.Reason}}"{{end}}>
+              {{.Hour}}
+            </button>
+          {{else}}
+            <p class="muted small slot-empty">No hay horarios para esta fecha.</p>
+          {{end}}
+        </div>
+        <div class="booking-summary" id="booking-summary" hidden>
+          <div><span class="muted small">Horario</span><strong id="summary-range">—</strong></div>
+          <div><span class="muted small">Total</span><strong id="summary-total">—</strong></div>
+        </div>
+        {{if .User}}
+          {{if .IsOwner}}
+            <a href="/panel/canchas/{{.Court.ID}}/editar" class="btn btn-outline btn-block">Editar mi cancha</a>
+          {{else}}
+            <button class="btn btn-primary btn-block" id="book-button" disabled>Reservar y pagar</button>
+            <p class="muted tiny center">Pago seguro con Mercado Pago. La reserva se libera si no pagas en {{.PendingMinutes}} minutos.</p>
+          {{end}}
+        {{else}}
+          <a href="/login?next=/canchas/{{.Court.ID}}" class="btn btn-primary btn-block">Inicia sesión para reservar</a>
+        {{end}}
+        <ul class="trust-list">
+          <li><span>✓</span> Confirmación inmediata</li>
+          <li><span>✓</span> Factura electrónica</li>
+          <li><span>✓</span> Soporte de Sportss</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div class="modal" id="review-modal" hidden>
+  <div class="modal-backdrop" data-close-modal></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="review-title">
+    <div class="modal-head">
+      <h2 id="review-title">Cuéntanos cómo te fue</h2>
+      <button type="button" class="icon-btn" data-close-modal aria-label="Cerrar">&times;</button>
+    </div>
+    <form id="review-form" data-booking-id="{{.ReviewBookingID}}">
+      <input type="hidden" name="_csrf" value="{{.CSRF}}">
+      <div class="field">
+        <span class="label">Tu calificación</span>
+        <div class="star-input" role="radiogroup" aria-label="Calificación">
+          {{range seq 5}}<label><input type="radio" name="rating" value="{{.}}" {{if eq . 5}}checked{{end}}><span aria-hidden="true">★</span><span class="sr-only">{{.}} estrellas</span></label>{{end}}
+        </div>
+      </div>
+      <div class="field">
+        <label for="review-comment">Comentario</label>
+        <textarea id="review-comment" name="comment" rows="4" maxlength="1500" required placeholder="¿Cómo estuvo la cancha, la atención y las instalaciones?"></textarea>
+      </div>
+      <button class="btn btn-primary btn-block" type="submit">Publicar reseña</button>
+    </form>
+  </div>
+</div>
+{{end}}

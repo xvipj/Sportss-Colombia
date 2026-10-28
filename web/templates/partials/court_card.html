@@ -1,0 +1,35 @@
+{{define "court_card"}}
+<article class="court-card">
+  <a href="/canchas/{{.ID}}" class="court-media" aria-label="Ver {{.Name}}">
+    {{if .Photos}}
+      <img src="{{(index .Photos 0).Path}}" alt="{{.Name}}" loading="lazy">
+    {{else}}
+      <div class="court-placeholder"><span>{{.Sport}}</span></div>
+    {{end}}
+    <span class="badge badge-float">{{if .Covered}}Cubierta{{else}}Descubierta{{end}}</span>
+  </a>
+  <div class="court-body">
+    <div class="court-topline">
+      <span class="sport-pill">{{.Sport}}</span>
+      {{if gt .RatingCount 0}}
+        <span class="rating"><span aria-hidden="true">★</span> {{stars .RatingAvg}} <span class="muted">({{.RatingCount}})</span></span>
+      {{else}}
+        <span class="muted small">Nueva</span>
+      {{end}}
+    </div>
+    <h3><a href="/canchas/{{.ID}}">{{.Name}}</a></h3>
+    <p class="location">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1116 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      {{.Neighborhood}}, {{.City}}
+    </p>
+    <div class="court-meta">
+      <span>{{.Surface}}</span>
+      <span>{{.Length}} × {{.Width}} m</span>
+    </div>
+    <div class="court-footer">
+      <div class="price"><strong>{{money .PricePerHour}}</strong><span>/ hora</span></div>
+      <span class="btn btn-outline btn-sm">Reservar</span>
+    </div>
+  </div>
+</article>
+{{end}}

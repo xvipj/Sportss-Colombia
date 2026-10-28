@@ -1,0 +1,166 @@
+{{define "content"}}
+<div class="page-head page-head-compact">
+  <div class="container">
+    {{template "panel_nav" .}}
+    <nav class="breadcrumb" aria-label="Ruta"><a href="/panel/canchas">Mis canchas</a><span>/</span><span>{{if .IsEdit}}Editar{{else}}Nueva{{end}}</span></nav>
+    <h1>{{if .IsEdit}}Editar cancha{{else}}Publicar una cancha{{end}}</h1>
+    <p class="muted">Completa la información para que los jugadores puedan encontrarte y reservar.</p>
+  </div>
+</div>
+
+<div class="container section-sm">
+  {{if .Error}}<div class="alert alert-error" role="alert">{{.Error}}</div>{{end}}
+  <form method="POST" action="{{if .IsEdit}}/panel/canchas/{{.Court.ID}}{{else}}/panel/canchas{{end}}" enctype="multipart/form-data" class="court-form" id="court-form"
+        data-surfaces="{{json .SurfacesJSON}}" data-edit="{{.IsEdit}}"
+        data-current-sport="{{if .Court}}{{.Court.Sport}}{{end}}">
+    <input type="hidden" name="_csrf" value="{{.CSRF}}">
+
+    <section class="card form-section">
+      <div class="form-section-head"><span class="form-step">1</span><div><h2>Información básica</h2><p class="muted">Lo primero que verán los jugadores.</p></div></div>
+      <div class="field">
+        <label for="name">Nombre de la cancha</label>
+        <input id="name" name="name" type="text" required maxlength="160" value="{{if .Court}}{{.Court.Name}}{{end}}" placeholder="Ej. El Campín Fútbol 5">
+      </div>
+      <div class="field">
+        <label for="description">Descripción</label>
+        <textarea id="description" name="description" rows="4" maxlength="2000" placeholder="Cuenta qué hace especial tu espacio: superficie, iluminación, servicios...">{{if .Court}}{{.Court.Description}}{{end}}</textarea>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="sport">Deporte</label>
+          <select id="sport" name="sport" required data-sport-select>
+            <option value="">Selecciona un deporte</option>
+            {{range .Sports}}<option value="{{.}}" {{if and $.Court (eq $.Court.Sport .)}}selected{{end}}>{{.}}</option>{{end}}
+          </select>
+        </div>
+        <div class="field">
+          <label for="surface">Tipo de superficie</label>
+          <select id="surface" name="surface" required data-surface-select>
+            {{if .Court}}<option value="{{.Court.Surface}}" selected>{{.Court.Surface}}</option>{{else}}<option value="">Primero elige un deporte</option>{{end}}
+          </select>
+        </div>
+      </div>
+      <div class="field-row dimensions-row">
+        <div class="field">
+          <label for="length">Largo (m)</label>
+          <input id="length" name="length" type="number" step="0.01" min="1" max="200" required value="{{if .Court}}{{.Court.Length}}{{end}}" placeholder="40">
+        </div>
+        <div class="field">
+          <label for="width">Ancho (m)</label>
+          <input id="width" name="width" type="number" step="0.01" min="1" max="200" required value="{{if .Court}}{{.Court.Width}}{{end}}" placeholder="20">
+        </div>
+        <p class="hint dimension-hint" id="dimension-hint">Medida estándar sugerida: 40 × 20 m.</p>
+      </div>
+    </section>
+
+    <section class="card form-section">
+      <div class="form-section-head"><span class="form-step">2</span><div><h2>Instalaciones y servicios</h2><p class="muted">Marca todo lo que ofreces.</p></div></div>
+      <div class="check-grid">
+        <label class="checkbox-row"><input type="checkbox" name="covered" {{if and .Court .Court.Covered}}checked{{end}}> <span>Cancha cubierta</span></label>
+        <label class="checkbox-row"><input type="checkbox" name="floodlights" {{if and .Court .Court.Floodlights}}checked{{end}}> <span>Iluminación nocturna</span></label>
+        <label class="checkbox-row"><input type="checkbox" name="parking" {{if and .Court .Court.Parking}}checked{{end}}> <span>Parqueadero</span></label>
+        <label class="checkbox-row"><input type="checkbox" name="bathrooms" {{if and .Court .Court.Bathrooms}}checked{{end}}> <span>Baños</span></label>
+        <label class="checkbox-row"><input type="checkbox" name="lockers" {{if and .Court .Court.Lockers}}checked{{end}}> <span>Vestuarios</span></label>
+        <label class="checkbox-row"><input type="checkbox" name="cafeteria" {{if and .Court .Court.Cafeteria}}checked{{end}}> <span>Cafetería</span></label>
+      </div>
+    </section>
+
+    <section class="card form-section">
+      <div class="form-section-head"><span class="form-step">3</span><div><h2>Precio y horarios</h2><p class="muted">Define tu tarifa por hora y disponibilidad.</p></div></div>
+      <div class="field-row">
+        <div class="field">
+          <label for="price_per_hour">Precio por hora (COP)</label>
+          <input id="price_per_hour" name="price_per_hour" type="number" min="1000" step="1000" required value="{{if .Court}}{{.Court.PricePerHour}}{{end}}" placeholder="120000">
+        </div>
+        <div class="field">
+          <label for="status">Estado de publicación</label>
+          <select id="status" name="status">
+            <option value="activa" {{if or (not .Court) (eq .Court.Status "activa")}}selected{{end}}>Activa</option>
+            <option value="pausada" {{if and .Court (eq .Court.Status "pausada")}}selected{{end}}>Pausada</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="open_time">Hora de apertura</label>
+          <input id="open_time" name="open_time" type="time" required value="{{if .Court}}{{.Court.OpenTime}}{{else}}07:00{{end}}">
+        </div>
+        <div class="field">
+          <label for="close_time">Hora de cierre</label>
+          <input id="close_time" name="close_time" type="time" required value="{{if .Court}}{{.Court.CloseTime}}{{else}}22:00{{end}}">
+        </div>
+      </div>
+      <fieldset class="field">
+        <legend class="label">Días disponibles</legend>
+        <div class="days-grid">
+          {{range $day := seq 6}}<label class="checkbox-row"><input type="checkbox" name="days" value="{{sub $day 1}}" {{if or (not $.Court) (hasDay $.Court.AvailableDays (sub $day 1))}}checked{{end}}> <span>{{dayName (sub $day 1)}}</span></label>{{end}}
+          <label class="checkbox-row"><input type="checkbox" name="days" value="0" {{if or (not .Court) (hasDay .Court.AvailableDays 0)}}checked{{end}}> <span>Domingo</span></label>
+        </div>
+      </fieldset>
+    </section>
+
+    <section class="card form-section">
+      <div class="form-section-head"><span class="form-step">4</span><div><h2>Ubicación</h2><p class="muted">Así te encontrarán en el buscador.</p></div></div>
+      <div class="field-row">
+        <div class="field">
+          <label for="department">Departamento</label>
+          <input id="department" name="department" type="text" required value="{{if .Court}}{{.Court.Department}}{{end}}" placeholder="Cundinamarca">
+        </div>
+        <div class="field">
+          <label for="city">Ciudad</label>
+          <input id="city" name="city" type="text" required value="{{if .Court}}{{.Court.City}}{{end}}" placeholder="Bogotá">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="neighborhood">Barrio</label>
+          <input id="neighborhood" name="neighborhood" type="text" value="{{if .Court}}{{.Court.Neighborhood}}{{end}}" placeholder="Salitre">
+        </div>
+        <div class="field">
+          <label for="address">Dirección</label>
+          <input id="address" name="address" type="text" required value="{{if .Court}}{{.Court.Address}}{{end}}" placeholder="Cra. 68 # 40-12">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="latitude">Latitud <span class="muted">(opcional)</span></label>
+          <input id="latitude" name="latitude" type="number" step="0.000001" min="-90" max="90" value="{{if and .Court (ne .Court.Latitude 0.0)}}{{.Court.Latitude}}{{end}}" placeholder="4.658400">
+        </div>
+        <div class="field">
+          <label for="longitude">Longitud <span class="muted">(opcional)</span></label>
+          <input id="longitude" name="longitude" type="number" step="0.000001" min="-180" max="180" value="{{if and .Court (ne .Court.Longitude 0.0)}}{{.Court.Longitude}}{{end}}" placeholder="-74.104800">
+        </div>
+      </div>
+      <p class="hint">Puedes obtener las coordenadas en OpenStreetMap haciendo clic derecho sobre tu cancha. Se usarán para mostrar el mapa.</p>
+      <div class="map-embed form-map" id="form-map-wrap" {{if not .Court}}hidden{{end}}>
+        <iframe id="form-map" title="Vista previa de ubicación" loading="lazy"
+          src="{{if .Court}}https://www.openstreetmap.org/export/embed.html?bbox={{bbox .Court.Latitude .Court.Longitude}}&amp;layer=mapnik&amp;marker={{.Court.Latitude}},{{.Court.Longitude}}{{end}}"></iframe>
+      </div>
+    </section>
+
+    <section class="card form-section">
+      <div class="form-section-head"><span class="form-step">5</span><div><h2>Fotos</h2><p class="muted">Máximo 5 imágenes. La primera será la portada.</p></div></div>
+      {{if and .Court .Court.Photos}}
+      <div class="photo-manage">
+        {{range .Court.Photos}}
+        <label class="photo-item">
+          <img src="{{.Path}}" alt="Foto de la cancha">
+          <span class="photo-delete"><input type="checkbox" name="delete_photos" value="{{.ID}}"> Eliminar</span>
+        </label>
+        {{end}}
+      </div>
+      {{end}}
+      <div class="field">
+        <label for="photos">Agregar fotos</label>
+        <input id="photos" name="photos" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+        <span class="hint">JPG, PNG o WebP. Hasta 5 MB por imagen y máximo 5 fotos en total.</span>
+      </div>
+    </section>
+
+    <div class="form-actions">
+      <a href="/panel/canchas" class="btn btn-ghost">Cancelar</a>
+      <button class="btn btn-primary" type="submit">{{if .IsEdit}}Guardar cambios{{else}}Publicar cancha{{end}}</button>
+    </div>
+  </form>
+</div>
+{{end}}

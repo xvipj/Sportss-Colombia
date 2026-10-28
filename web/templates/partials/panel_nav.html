@@ -1,0 +1,9 @@
+{{define "panel_nav"}}
+<nav class="subnav" aria-label="Panel de administración">
+  <a href="/panel" class="{{if eq .CurrentPath "/panel"}}active{{end}}">Resumen</a>
+  <a href="/panel/canchas" class="{{if eq .CurrentPath "/panel/canchas"}}active{{end}}">Canchas</a>
+  <a href="/panel/reservas" class="{{if eq .CurrentPath "/panel/reservas"}}active{{end}}">Reservas</a>
+  <a href="/panel/resenas" class="{{if eq .CurrentPath "/panel/resenas"}}active{{end}}">Reseñas</a>
+  <a href="/panel/canchas/nueva" class="btn btn-primary btn-sm">+ Nueva cancha</a>
+</nav>
+{{end}}

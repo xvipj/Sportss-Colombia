@@ -1,0 +1,53 @@
+{{define "content"}}
+<div class="page-head page-head-compact">
+  <div class="container">
+    {{template "admin_nav" .}}
+    <div class="page-head-row">
+      <div>
+        <span class="eyebrow">Super administrador</span>
+        <h1>Usuarios</h1>
+        <p class="muted">{{.Total}} cuentas registradas.</p>
+      </div>
+      <form method="GET" action="/admin/usuarios" class="inline-search">
+        <label for="q" class="sr-only">Buscar usuarios</label>
+        <input id="q" name="q" type="search" value="{{.Search}}" placeholder="Nombre, correo o negocio">
+        <button class="btn btn-outline btn-sm" type="submit">Buscar</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="container section-sm">
+  <div class="card table-card">
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>Usuario</th><th>Rol</th><th>Tipo</th><th>Teléfono</th><th>Registro</th><th>Estado</th><th class="right">Acción</th></tr></thead>
+        <tbody>
+          {{range .Users}}
+          <tr>
+            <td data-label="Usuario"><strong>{{.Name}}</strong><span class="muted small block">{{.Email}}</span>{{if .BusinessName}}<span class="muted small block">{{.BusinessName}}</span>{{end}}</td>
+            <td data-label="Rol"><span class="badge badge-{{roleClass .Role}}">{{roleLabel .Role}}</span></td>
+            <td data-label="Tipo">{{.AccountType}}</td>
+            <td data-label="Teléfono">{{.Phone}}</td>
+            <td data-label="Registro">{{date .CreatedAt}}</td>
+            <td data-label="Estado">{{if .Active}}<span class="badge badge-ok">Activo</span>{{else}}<span class="badge badge-danger">Bloqueado</span>{{end}}</td>
+            <td data-label="Acción" class="right">
+              {{if ne .ID $.User.ID}}
+              <form method="POST" action="/admin/usuarios/{{.ID}}/estado" data-confirm="{{if .Active}}¿Bloquear esta cuenta? No podrá iniciar sesión. {{else}}¿Activar esta cuenta?{{end}}">
+                <input type="hidden" name="_csrf" value="{{$.CSRF}}">
+                <input type="hidden" name="active" value="{{if .Active}}false{{else}}true{{end}}">
+                <button class="btn btn-ghost btn-xs {{if .Active}}text-danger{{end}}" type="submit">{{if .Active}}Bloquear{{else}}Activar{{end}}</button>
+              </form>
+              {{else}}<span class="muted small">Tú</span>{{end}}
+            </td>
+          </tr>
+          {{end}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {{if gt (len .Pages) 1}}
+  <nav class="pagination" aria-label="Paginación">{{range .Pages}}<a href="{{.URL}}" class="page-btn {{if .Active}}active{{end}}">{{.Number}}</a>{{end}}</nav>
+  {{end}}
+</div>
+{{end}}

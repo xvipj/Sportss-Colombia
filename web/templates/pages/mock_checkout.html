@@ -1,0 +1,40 @@
+{{define "content"}}
+<div class="container section">
+  <div class="mock-checkout card">
+    <div class="mock-head">
+      <span class="mock-badge">MODO PRUEBA</span>
+      <span class="muted small">No se realizará ningún cargo real</span>
+    </div>
+    <div class="mock-grid">
+      <div>
+        <span class="eyebrow">Checkout seguro</span>
+        <h1>Confirma tu reserva</h1>
+        <p class="muted">Este checkout local simula la aprobación de Mercado Pago porque no hay credenciales configuradas.</p>
+        <div class="result-summary">
+          <div><span class="muted small">Cancha</span><strong>{{.Booking.Court.Name}}</strong></div>
+          <div><span class="muted small">Fecha</span><strong>{{date .Booking.Date}}</strong></div>
+          <div><span class="muted small">Horario</span><strong>{{.Booking.StartTime}} – {{.Booking.EndTime}}</strong></div>
+          <div><span class="muted small">Cliente</span><strong>{{.User.Name}}</strong></div>
+          <div><span class="muted small">Total a pagar</span><strong class="price-big">{{money .Booking.TotalAmount}}</strong></div>
+        </div>
+        <form method="POST" action="/checkout/mock/{{.Booking.ID}}/confirmar" class="stack-form">
+          <input type="hidden" name="_csrf" value="{{.CSRF}}">
+          <button class="btn btn-primary btn-block" type="submit">Simular pago aprobado</button>
+          <a href="/mis-reservas" class="btn btn-ghost btn-block">Cancelar</a>
+        </form>
+      </div>
+      <aside class="mock-side">
+        <div class="mock-logo">MP</div>
+        <h2>Mercado Pago</h2>
+        <p class="muted small">Checkout Pro · COP</p>
+        <ul class="trust-list">
+          <li><span>✓</span> Pago protegido</li>
+          <li><span>✓</span> Confirmación inmediata</li>
+          <li><span>✓</span> Factura automática</li>
+        </ul>
+        <p class="hint">Para activar el checkout real configura <code>MP_ACCESS_TOKEN</code> en tu archivo <code>.env</code>. Consulta el README.</p>
+      </aside>
+    </div>
+  </div>
+</div>
+{{end}}

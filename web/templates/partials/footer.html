@@ -1,0 +1,40 @@
+{{define "footer"}}
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <div class="brand brand-footer">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" width="24" height="24" fill="none">
+            <circle cx="16" cy="16" r="13" stroke="currentColor" stroke-width="2.5"/>
+            <path d="M16 8.5l5 3.6-1.9 5.9h-6.2L11 12.1l5-3.6z" fill="currentColor"/>
+          </svg>
+        </span>
+        <span class="brand-name">Sportss<span class="brand-dot">.</span></span>
+      </div>
+      <p class="muted small">Reserva tu juego. Vive el deporte.<br>Hecho en Colombia.</p>
+    </div>
+    <div class="footer-links">
+      <h3>Explorar</h3>
+      <a href="/buscar">Buscar canchas</a>
+      <a href="/buscar?sport=F%C3%BAtbol%205">Fútbol 5</a>
+      <a href="/buscar?sport=P%C3%A1del">Pádel</a>
+      <a href="/buscar?sport=Baloncesto">Baloncesto</a>
+    </div>
+    <div class="footer-links">
+      <h3>Para negocios</h3>
+      <a href="/registro?tipo=empresa">Publica tu cancha</a>
+      <a href="/panel">Panel de administración</a>
+      <a href="/login">Ingresar</a>
+    </div>
+    <div class="footer-links">
+      <h3>Contacto</h3>
+      <a href="mailto:hola@sportss.co">hola@sportss.co</a>
+      <span class="muted small">Bogotá, Colombia</span>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <span class="muted small">© {{.Year}} Sportss Colombia. Todos los derechos reservados.</span>
+    <span class="muted small">Pagos seguros con Mercado Pago</span>
+  </div>
+</footer>
+{{end}}

@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Cancha de voleibol">
+  <defs>
+    <linearGradient id="sand" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f3d9a4"/>
+      <stop offset=".55" stop-color="#e8c583"/>
+      <stop offset="1" stop-color="#d3a963"/>
+    </linearGradient>
+    <linearGradient id="vlight" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".22"/>
+      <stop offset=".65" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="vs" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#7a5424" flood-opacity=".35"/>
+    </filter>
+    <pattern id="grains" width="46" height="46" patternUnits="userSpaceOnUse">
+      <circle cx="8" cy="12" r="1.5" fill="#7a5424" opacity=".12"/>
+      <circle cx="30" cy="33" r="1.4" fill="#ffffff" opacity=".18"/>
+      <circle cx="40" cy="8" r="1" fill="#7a5424" opacity=".1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sand)"/>
+  <rect width="1200" height="800" fill="url(#grains)"/>
+  <circle cx="1080" cy="120" r="280" fill="#0f766e" opacity=".07"/>
+  <g filter="url(#vs)">
+    <rect x="180" y="140" width="840" height="500" rx="6" fill="#e2bf7b"/>
+    <rect x="180" y="140" width="840" height="500" rx="6" fill="none" stroke="#ffffff" stroke-width="6" opacity=".95"/>
+    <path d="M600 140v500" stroke="#ffffff" stroke-width="4" opacity=".9"/>
+    <path d="M330 140v500M870 140v500" stroke="#ffffff" stroke-width="4" opacity=".9"/>
+    <path d="M330 210h540M330 570h540" stroke="#ffffff" stroke-width="3" opacity=".55"/>
+    <circle cx="600" cy="390" r="4" fill="#ffffff" opacity=".9"/>
+  </g>
+  <g>
+    <rect x="590" y="150" width="20" height="480" fill="#ffffff" opacity=".35"/>
+    <path d="M600 150v480" stroke="#ffffff" stroke-width="2" opacity=".55" stroke-dasharray="5 7"/>
+    <path d="M590 200h20M590 260h20M590 320h20M590 380h20M590 440h20M590 500h20M590 560h20" stroke="#ffffff" stroke-width="2" opacity=".35"/>
+    <path d="M510 150v0M690 630v0" stroke="none"/>
+    <path d="M470 150v480M730 150v480" stroke="#9a6d33" stroke-width="4" opacity=".35"/>
+    <path d="M470 150v480M730 150v480" stroke="#ffffff" stroke-width="2" opacity=".35"/>
+  </g>
+  <g transform="translate(920 690)">
+    <circle r="34" fill="#ffffff"/>
+    <path d="M-24 -12c16 16 32 16 48 0M-24 12c16-16 32-16 48 0" fill="none" stroke="#0f766e" stroke-width="4"/>
+    <path d="M-13 -27c10 18 10 36 0 54M13 -27c-10 18-10 36 0 54" fill="none" stroke="#f59e0b" stroke-width="4"/>
+  </g>
+  <rect width="1200" height="800" fill="url(#vlight)"/>
+  <g transform="translate(180 706)">
+    <rect width="210" height="46" rx="23" fill="#7a5424" opacity=".55"/>
+    <text x="105" y="30" font-family="Poppins, Arial, sans-serif" font-size="20" font-weight="700" letter-spacing="3" text-anchor="middle" fill="#ffffff">VOLEIBOL</text>
+  </g>
+</svg>
